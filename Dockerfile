@@ -5,11 +5,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app ./app
-COPY run.py ./run.py
+COPY . .
 
-RUN mkdir -p /app/data
-
+RUN mv .env.example .env
 EXPOSE 5000
 
 CMD ["python", "run.py"]

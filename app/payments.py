@@ -124,7 +124,7 @@ def payment_success():
     payment = Payment(
         user_id=current_user.id,
         stripe_session_id=session_id,
-        stripe_payment_intent_id=cs.get("payment_intent"),
+        stripe_payment_intent_id=getattr(cs, "payment_intent", None),
         amount=1.0,
         currency="cad",
         payment_type="per_request",
@@ -134,8 +134,8 @@ def payment_success():
     db.session.flush()
 
     # Link Stripe customer
-    if not current_user.stripe_customer_id and cs.get("customer"):
-        current_user.stripe_customer_id = cs["customer"]
+    if not current_user.stripe_customer_id and getattr(cs, "customer", None):
+        current_user.stripe_customer_id = cs.customer
 
     # Execute pending prediction (payload saved in Flask session before payment)
     pending = session.pop("pending_payload", None)
@@ -182,7 +182,7 @@ def subscription_success():
         flash(f"Impossible de vérifier l'abonnement: {exc.user_message or str(exc)}", "error")
         return redirect(url_for("main.home"))
 
-    stripe_sub = cs.get("subscription")
+    stripe_sub = getattr(cs, "subscription", None)
     now = datetime.utcnow()
 
     if stripe_sub and hasattr(stripe_sub, "current_period_end"):
@@ -202,8 +202,8 @@ def subscription_success():
     )
     db.session.add(sub)
 
-    if not current_user.stripe_customer_id and cs.get("customer"):
-        current_user.stripe_customer_id = cs["customer"]
+    if not current_user.stripe_customer_id and getattr(cs, "customer", None):
+        current_user.stripe_customer_id = cs.customer
 
     db.session.commit()
     flash("✓ Abonnement mensuel activé ! Prédictions illimitées jusqu'au " +
