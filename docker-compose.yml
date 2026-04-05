@@ -1,0 +1,8 @@
+services:
+  web:
+    container_name: lab3_web
+    build: .
+    ports:
+      - "5101:5000"
+    volumes:
+      - .:/app
