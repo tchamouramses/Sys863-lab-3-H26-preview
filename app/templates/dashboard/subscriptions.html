@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Abonnements{% endblock %}
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-7 sm:px-6">
+  <div class="flex items-center justify-between mb-5">
+    <div>
+      <h1 class="font-display font-bold text-2xl text-white">Mes abonnements</h1>
+      <p class="text-white/40 text-sm mt-1">Historique de vos forfaits mensuels</p>
+    </div>
+    {% if not current_user.active_subscription %}
+    <form method="POST" action="{{ url_for('payments.checkout_subscribe') }}">
+      <button type="submit" class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-xl px-4 py-2.5 transition">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        S'abonner — 10 CAD / mois
+      </button>
+    </form>
+    {% endif %}
+  </div>
+
+  <!-- Active subscription highlight -->
+  {% set active = current_user.active_subscription %}
+  {% if active %}
+  <div class="glass rounded-2xl border border-green-500/30 p-6 mb-5">
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      <div>
+        <p class="text-xs text-green-400/70 uppercase tracking-wider font-semibold mb-1">Abonnement actif</p>
+        <p class="font-display font-bold text-xl text-white">10,00 CAD / mois</p>
+        <p class="text-sm text-white/50 mt-1">Valide jusqu'au {{ active.end_date.strftime('%d %B %Y') }}</p>
+      </div>
+      <div class="flex flex-col items-end gap-2">
+        <span class="badge-active rounded-full px-3 py-1 text-sm font-semibold">Actif</span>
+        <p class="text-xs text-white/30">Renouvellement automatique via Stripe</p>
+      </div>
+    </div>
+    <!-- Progress bar days remaining -->
+    {% set days_total = (active.end_date - active.start_date).days %}
+    {% set days_left  = (active.end_date - now).days %}
+    {% set pct = [(days_left / days_total * 100) | int, 100] | min %}
+    <div class="mt-4">
+      <div class="flex justify-between text-xs text-white/30 mb-1">
+        <span>{{ days_left }} jour{{ 's' if days_left != 1 }} restant{{ 's' if days_left != 1 }}</span>
+        <span>{{ days_total }} jours au total</span>
+      </div>
+      <div class="bg-white/10 rounded-full h-1.5 overflow-hidden">
+        <div class="h-full bg-green-500 rounded-full transition-all duration-700" style="width:{{ pct }}%"></div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- History table -->
+  {% if subscriptions %}
+  <div class="glass rounded-2xl overflow-hidden">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="border-b border-white/10">
+          <th class="text-left text-xs font-semibold text-white/40 uppercase tracking-wider px-5 py-3">Début</th>
+          <th class="text-left text-xs font-semibold text-white/40 uppercase tracking-wider px-3 py-3">Expiration</th>
+          <th class="text-left text-xs font-semibold text-white/40 uppercase tracking-wider px-3 py-3">Montant</th>
+          <th class="text-left text-xs font-semibold text-white/40 uppercase tracking-wider px-3 py-3">Statut</th>
+          <th class="text-left text-xs font-semibold text-white/40 uppercase tracking-wider px-3 py-3 hidden lg:table-cell">ID Stripe</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in subscriptions %}
+        <tr class="border-b border-white/5 hover:bg-white/5 transition">
+          <td class="px-5 py-4 text-white/60">{{ s.start_date.strftime('%d/%m/%Y') if s.start_date else '—' }}</td>
+          <td class="px-3 py-4 text-white/60">{{ s.end_date.strftime('%d/%m/%Y')   if s.end_date   else '—' }}</td>
+          <td class="px-3 py-4 font-semibold text-white">{{ "%.2f"|format(s.amount) }} {{ s.currency.upper() }}</td>
+          <td class="px-3 py-4">
+            <span class="badge-{{ s.status }} rounded-full px-2.5 py-1 text-xs font-semibold">
+              {% if s.status == 'active'   %}Actif
+              {% elif s.status == 'canceled' %}Annulé
+              {% elif s.status == 'past_due' %}En retard
+              {% else %}En attente{% endif %}
+            </span>
+          </td>
+          <td class="px-3 py-4 text-white/30 text-xs font-mono hidden lg:table-cell">
+            {{ (s.stripe_subscription_id or '—')[:25] }}…
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% else %}
+  <div class="glass rounded-2xl p-12 text-center">
+    <svg class="w-10 h-10 text-white/20 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+    </svg>
+    <p class="text-white/40 text-sm">Aucun abonnement pour le moment.</p>
+    <form method="POST" action="{{ url_for('payments.checkout_subscribe') }}" class="mt-4 inline-block">
+      <button type="submit" class="bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-xl px-4 py-2.5 transition">
+        S'abonner pour 10 CAD / mois
+      </button>
+    </form>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
