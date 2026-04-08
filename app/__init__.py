@@ -47,11 +47,13 @@ def create_app() -> Flask:
     from .dashboard import dashboard_bp
     from .payments  import payments_bp
     from .routes    import main_bp
+    from .api       import api_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp,      url_prefix="/auth")
     app.register_blueprint(dashboard_bp, url_prefix="/dashboard")
     app.register_blueprint(payments_bp,  url_prefix="/payments")
+    app.register_blueprint(api_bp)
 
     # ── Template filters ────────────────────────────────────────────────────
     @app.template_filter("without_key")
