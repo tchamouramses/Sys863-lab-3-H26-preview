@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Inscription{% endblock %}
+{% block title %}<span data-fr="Inscription" data-en="Sign up">Inscription</span>{% endblock %}
 {% block content %}
 <div class="min-h-[calc(100vh-60px)] flex items-center justify-center px-4 py-12">
   <div class="w-full max-w-md">
@@ -11,37 +11,47 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
           </svg>
         </div>
-        <h1 class="font-display font-bold text-2xl text-white">Créer un compte</h1>
-        <p class="text-white/50 text-sm mt-1">5 prédictions gratuites offertes</p>
+        <h1 class="font-display font-bold text-2xl text-white" data-fr="Créer un compte" data-en="Create an account">Créer un compte</h1>
+        <p class="text-white/50 text-sm mt-1" data-fr="5 prédictions gratuites offertes" data-en="5 free predictions included">5 prédictions gratuites offertes</p>
       </div>
 
       <form method="POST" action="{{ url_for('auth.register') }}" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-white/70 mb-1">Nom d'utilisateur</label>
-          <input type="text" name="username" class="inp" placeholder="ex: fermierjean" required
-            pattern="[A-Za-z0-9_]{3,50}" title="3-50 caractères alphanumériques" autocomplete="username" />
+          <label class="block text-xs font-semibold text-white/70 mb-1" data-fr="Nom d'utilisateur" data-en="Username">Nom d'utilisateur</label>
+          <input type="text" name="username" class="inp"
+            placeholder="ex: fermierjean"
+            data-placeholder-fr="ex: fermierjean" data-placeholder-en="e.g. farmerjohn"
+            required pattern="[A-Za-z0-9_]{3,50}"
+            title="3-50 alphanumeric characters" autocomplete="username" />
         </div>
         <div>
-          <label class="block text-xs font-semibold text-white/70 mb-1">Adresse email</label>
-          <input type="email" name="email" class="inp" placeholder="vous@exemple.com" required autocomplete="email" />
+          <label class="block text-xs font-semibold text-white/70 mb-1" data-fr="Adresse email" data-en="Email address">Adresse email</label>
+          <input type="email" name="email" class="inp" placeholder="vous@exemple.com"
+            data-placeholder-fr="vous@exemple.com" data-placeholder-en="you@example.com"
+            required autocomplete="email" />
         </div>
         <div>
-          <label class="block text-xs font-semibold text-white/70 mb-1">Mot de passe <span class="text-white/30 font-normal">(8 caractères min.)</span></label>
+          <label class="block text-xs font-semibold text-white/70 mb-1">
+            <span data-fr="Mot de passe" data-en="Password">Mot de passe</span>
+            <span class="text-white/30 font-normal" data-fr="(8 caractères min.)" data-en="(8 characters min.)">(8 caractères min.)</span>
+          </label>
           <input type="password" name="password" class="inp" placeholder="••••••••" required minlength="8" autocomplete="new-password" />
         </div>
         <div>
-          <label class="block text-xs font-semibold text-white/70 mb-1">Confirmer le mot de passe</label>
+          <label class="block text-xs font-semibold text-white/70 mb-1" data-fr="Confirmer le mot de passe" data-en="Confirm password">Confirmer le mot de passe</label>
           <input type="password" name="confirm_password" class="inp" placeholder="••••••••" required autocomplete="new-password" />
         </div>
         <button type="submit"
-          class="w-full bg-green-600 hover:bg-green-700 active:scale-[.99] text-white font-semibold text-sm rounded-xl py-3 transition-all mt-2">
+          class="w-full bg-green-600 hover:bg-green-700 active:scale-[.99] text-white font-semibold text-sm rounded-xl py-3 transition-all mt-2"
+          data-fr="Créer mon compte" data-en="Create my account">
           Créer mon compte
         </button>
       </form>
 
       <p class="text-center text-xs text-white/40 mt-6">
-        Déjà un compte ?
-        <a href="{{ url_for('auth.login') }}" class="text-green-400 hover:text-green-300 font-semibold">Se connecter</a>
+        <span data-fr="Déjà un compte ?" data-en="Already have an account?">Déjà un compte ?</span>
+        <a href="{{ url_for('auth.login') }}" class="text-green-400 hover:text-green-300 font-semibold"
+           data-fr="Se connecter" data-en="Sign in">Se connecter</a>
       </p>
     </div>
   </div>

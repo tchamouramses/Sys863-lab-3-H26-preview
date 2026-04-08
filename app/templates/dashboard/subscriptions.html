@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Abonnements{% endblock %}
+{% block title %}<span data-fr="Abonnements" data-en="Subscriptions">Abonnements</span>{% endblock %}
 {% block content %}
 <div class="max-w-5xl mx-auto px-4 py-7 sm:px-6">
   <div class="flex items-center justify-between mb-5">
     <div>
-      <h1 class="font-display font-bold text-2xl text-white">Mes abonnements</h1>
-      <p class="text-white/40 text-sm mt-1">Historique de vos forfaits mensuels</p>
+      <h1 class="font-display font-bold text-2xl text-white" data-fr="Mes abonnements" data-en="My subscriptions">Mes abonnements</h1>
+      <p class="text-white/40 text-sm mt-1" data-fr="Historique de vos forfaits mensuels" data-en="History of your monthly plans">Historique de vos forfaits mensuels</p>
     </div>
     {% if not current_user.active_subscription %}
     <form method="POST" action="{{ url_for('payments.checkout_subscribe') }}">
@@ -13,7 +13,7 @@
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
         </svg>
-        S'abonner — 10 CAD / mois
+        <span data-fr="S'abonner — 10 CAD / mois" data-en="Subscribe — 10 CAD / month">S'abonner — 10 CAD / mois</span>
       </button>
     </form>
     {% endif %}
@@ -25,13 +25,15 @@
   <div class="glass rounded-2xl border border-green-500/30 p-6 mb-5">
     <div class="flex items-center justify-between flex-wrap gap-4">
       <div>
-        <p class="text-xs text-green-400/70 uppercase tracking-wider font-semibold mb-1">Abonnement actif</p>
-        <p class="font-display font-bold text-xl text-white">10,00 CAD / mois</p>
-        <p class="text-sm text-white/50 mt-1">Valide jusqu'au {{ active.end_date.strftime('%d %B %Y') }}</p>
+        <p class="text-xs text-green-400/70 uppercase tracking-wider font-semibold mb-1" data-fr="Abonnement actif" data-en="Active subscription">Abonnement actif</p>
+        <p class="font-display font-bold text-xl text-white">10,00 CAD / <span data-fr="mois" data-en="month">mois</span></p>
+        <p class="text-sm text-white/50 mt-1">
+          <span data-fr="Valide jusqu'au" data-en="Valid until">Valide jusqu'au</span> {{ active.end_date.strftime('%d %B %Y') }}
+        </p>
       </div>
       <div class="flex flex-col items-end gap-2">
-        <span class="badge-active rounded-full px-3 py-1 text-sm font-semibold">Actif</span>
-        <p class="text-xs text-white/30">Renouvellement automatique via Stripe</p>
+        <span class="badge-active rounded-full px-3 py-1 text-sm font-semibold" data-fr="Actif" data-en="Active">Actif</span>
+        <p class="text-xs text-white/30" data-fr="Renouvellement automatique via Stripe" data-en="Automatic renewal via Stripe">Renouvellement automatique via Stripe</p>
       </div>
     </div>
     <!-- Progress bar days remaining -->
@@ -40,8 +42,8 @@
     {% set pct = [(days_left / days_total * 100) | int, 100] | min %}
     <div class="mt-4">
       <div class="flex justify-between text-xs text-white/30 mb-1">
-        <span>{{ days_left }} jour{{ 's' if days_left != 1 }} restant{{ 's' if days_left != 1 }}</span>
-        <span>{{ days_total }} jours au total</span>
+        <span>{{ days_left }} <span data-fr="jour{{ 's' if days_left != 1 }} restant{{ 's' if days_left != 1 }}" data-en="day{{ 's' if days_left != 1 }} remaining">jour{{ 's' if days_left != 1 }} restant{{ 's' if days_left != 1 }}</span></span>
+        <span>{{ days_total }} <span data-fr="jours au total" data-en="days total">jours au total</span></span>
       </div>
       <div class="bg-white/10 rounded-full h-1.5 overflow-hidden">
         <div class="h-full bg-green-500 rounded-full transition-all duration-700" style="width:{{ pct }}%"></div>
@@ -56,11 +58,11 @@
     <table class="w-full text-sm">
       <thead>
         <tr class="border-b border-white/10">
-          <th class="text-left text-xs font-semibold text-white/40 uppercase tracking-wider px-5 py-3">Début</th>
-          <th class="text-left text-xs font-semibold text-white/40 uppercase tracking-wider px-3 py-3">Expiration</th>
-          <th class="text-left text-xs font-semibold text-white/40 uppercase tracking-wider px-3 py-3">Montant</th>
-          <th class="text-left text-xs font-semibold text-white/40 uppercase tracking-wider px-3 py-3">Statut</th>
-          <th class="text-left text-xs font-semibold text-white/40 uppercase tracking-wider px-3 py-3 hidden lg:table-cell">ID Stripe</th>
+          <th class="text-left text-xs font-semibold text-white/40 uppercase tracking-wider px-5 py-3" data-fr="Début" data-en="Start">Début</th>
+          <th class="text-left text-xs font-semibold text-white/40 uppercase tracking-wider px-3 py-3" data-fr="Expiration" data-en="Expiry">Expiration</th>
+          <th class="text-left text-xs font-semibold text-white/40 uppercase tracking-wider px-3 py-3" data-fr="Montant" data-en="Amount">Montant</th>
+          <th class="text-left text-xs font-semibold text-white/40 uppercase tracking-wider px-3 py-3" data-fr="Statut" data-en="Status">Statut</th>
+          <th class="text-left text-xs font-semibold text-white/40 uppercase tracking-wider px-3 py-3 hidden lg:table-cell" data-fr="ID Stripe" data-en="Stripe ID">ID Stripe</th>
         </tr>
       </thead>
       <tbody>
@@ -71,10 +73,10 @@
           <td class="px-3 py-4 font-semibold text-white">{{ "%.2f"|format(s.amount) }} {{ s.currency.upper() }}</td>
           <td class="px-3 py-4">
             <span class="badge-{{ s.status }} rounded-full px-2.5 py-1 text-xs font-semibold">
-              {% if s.status == 'active'   %}Actif
-              {% elif s.status == 'canceled' %}Annulé
-              {% elif s.status == 'past_due' %}En retard
-              {% else %}En attente{% endif %}
+              {% if s.status == 'active'   %}<span data-fr="Actif"      data-en="Active">Actif</span>
+              {% elif s.status == 'canceled' %}<span data-fr="Annulé"  data-en="Cancelled">Annulé</span>
+              {% elif s.status == 'past_due' %}<span data-fr="En retard" data-en="Past due">En retard</span>
+              {% else %}<span data-fr="En attente" data-en="Pending">En attente</span>{% endif %}
             </span>
           </td>
           <td class="px-3 py-4 text-white/30 text-xs font-mono hidden lg:table-cell">
@@ -91,9 +93,10 @@
     <svg class="w-10 h-10 text-white/20 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
     </svg>
-    <p class="text-white/40 text-sm">Aucun abonnement pour le moment.</p>
+    <p class="text-white/40 text-sm" data-fr="Aucun abonnement pour le moment." data-en="No subscriptions yet.">Aucun abonnement pour le moment.</p>
     <form method="POST" action="{{ url_for('payments.checkout_subscribe') }}" class="mt-4 inline-block">
-      <button type="submit" class="bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-xl px-4 py-2.5 transition">
+      <button type="submit" class="bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-xl px-4 py-2.5 transition"
+              data-fr="S'abonner pour 10 CAD / mois" data-en="Subscribe for 10 CAD / month">
         S'abonner pour 10 CAD / mois
       </button>
     </form>

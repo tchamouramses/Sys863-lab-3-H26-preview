@@ -98,4 +98,6 @@ class PredictionRequest(db.Model):
     subscription_id = db.Column(db.Integer, db.ForeignKey("subscriptions.id"), nullable=True)
     created_at      = db.Column(db.DateTime, default=datetime.utcnow)
 
+    feedback       = db.Column(db.String(20), nullable=True)  # parfait | moyen | mauvais
+
     user = db.relationship("User", back_populates="predictions")

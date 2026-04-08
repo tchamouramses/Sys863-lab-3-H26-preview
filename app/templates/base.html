@@ -120,9 +120,9 @@
 
       {% if current_user.is_authenticated %}
       <nav class="flex items-center gap-0.5">
-        <a href="{{ url_for('main.home') }}"             class="nav-link {% if request.endpoint == 'main.home'             %}nav-active{% endif %}">Prédiction</a>
-        <a href="{{ url_for('dashboard.history') }}"     class="nav-link {% if request.endpoint == 'dashboard.history'     %}nav-active{% endif %}">Historique</a>
-        <a href="{{ url_for('dashboard.subscriptions') }}" class="nav-link {% if request.endpoint == 'dashboard.subscriptions' %}nav-active{% endif %}">Abonnements</a>
+        <a href="{{ url_for('main.home') }}"             class="nav-link {% if request.endpoint == 'main.home'             %}nav-active{% endif %}" data-fr="Prédiction" data-en="Prediction">Prédiction</a>
+        <a href="{{ url_for('dashboard.history') }}"     class="nav-link {% if request.endpoint == 'dashboard.history'     %}nav-active{% endif %}" data-fr="Historique" data-en="History">Historique</a>
+        <a href="{{ url_for('dashboard.subscriptions') }}" class="nav-link {% if request.endpoint == 'dashboard.subscriptions' %}nav-active{% endif %}" data-fr="Abonnements" data-en="Subscriptions">Abonnements</a>
       </nav>
       {% endif %}
 
@@ -131,22 +131,22 @@
           <!-- Credits badge -->
           {% if current_user.active_subscription %}
           <span class="hidden sm:flex items-center gap-1.5 text-xs font-semibold badge-active rounded-full px-2.5 py-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>Abonné
+            <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span><span data-fr="Abonné" data-en="Subscriber">Abonné</span>
           </span>
           {% else %}
           <span class="hidden sm:flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full
             {% if current_user.free_requests_remaining > 0 %}badge-active{% else %}badge-past_due{% endif %}">
             <span class="w-1.5 h-1.5 rounded-full {% if current_user.free_requests_remaining > 0 %}bg-green-400{% else %}bg-amber-400{% endif %}"></span>
-            {{ current_user.free_requests_remaining }} gratuit{{ 'es' if current_user.free_requests_remaining != 1 else 'e' }}
+            {{ current_user.free_requests_remaining }} <span data-fr="gratuite{{ 's' if current_user.free_requests_remaining != 1 else 'e' }}" data-en="free">gratuite{{ 's' if current_user.free_requests_remaining != 1 else 'e' }}</span>
           </span>
           {% endif %}
 
           <!-- Username -->
           <span class="text-xs text-white/60 font-semibold hidden sm:inline">{{ current_user.username }}</span>
-          <a href="{{ url_for('auth.logout') }}" class="text-xs font-semibold text-red-400/80 hover:text-red-300 px-2 py-1.5 transition rounded-lg hover:bg-red-900/20">Déconnexion</a>
+          <a href="{{ url_for('auth.logout') }}" class="text-xs font-semibold text-red-400/80 hover:text-red-300 px-2 py-1.5 transition rounded-lg hover:bg-red-900/20" data-fr="Déconnexion" data-en="Sign out">Déconnexion</a>
         {% else %}
-          <a href="{{ url_for('auth.login') }}"    class="text-xs font-semibold text-white/60 hover:text-white px-3 py-1.5 transition">Connexion</a>
-          <a href="{{ url_for('auth.register') }}" class="text-xs font-semibold text-white bg-green-600 hover:bg-green-700 rounded-full px-3 py-1.5 transition">Inscription</a>
+          <a href="{{ url_for('auth.login') }}"    class="text-xs font-semibold text-white/60 hover:text-white px-3 py-1.5 transition" data-fr="Connexion" data-en="Sign in">Connexion</a>
+          <a href="{{ url_for('auth.register') }}" class="text-xs font-semibold text-white bg-green-600 hover:bg-green-700 rounded-full px-3 py-1.5 transition" data-fr="Inscription" data-en="Sign up">Inscription</a>
         {% endif %}
 
         <!-- Lang toggle -->
@@ -204,9 +204,10 @@
   </script>
   <!-- ── Shared JS: language toggle ────────────────────────────────────── -->
   <script>
-    let currentLang = "fr";
+    let currentLang = localStorage.getItem("lang") || "fr";
     function applyLang(lang) {
       currentLang = lang;
+      localStorage.setItem("lang", lang);
       document.getElementById("html-root").lang = lang;
       const lbl = document.getElementById("lang-label");
       if (lbl) lbl.textContent = lang === "fr" ? "EN" : "FR";
@@ -220,6 +221,8 @@
         opt.textContent = lang === "fr" ? opt.dataset.fr : opt.dataset.en;
       });
     }
+    // Restore saved language on page load
+    if (currentLang !== "fr") applyLang(currentLang);
     const lb = document.getElementById("lang-btn");
     if (lb) lb.addEventListener("click", () => applyLang(currentLang === "fr" ? "en" : "fr"));
   </script>

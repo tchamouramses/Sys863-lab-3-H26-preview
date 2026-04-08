@@ -65,6 +65,15 @@ def create_app() -> Flask:
     # ── Create tables ─────────────────────────────────────────────────────────
     with app.app_context():
         db.create_all()
+        # Safe migration: add feedback column if missing (SQLite doesn't support
+        # adding columns automatically when the table already exists)
+        from sqlalchemy import text, inspect as sa_inspect
+        inspector = sa_inspect(db.engine)
+        cols = [c["name"] for c in inspector.get_columns("prediction_requests")]
+        if "feedback" not in cols:
+            with db.engine.connect() as conn:
+                conn.execute(text("ALTER TABLE prediction_requests ADD COLUMN feedback VARCHAR(20)"))
+                conn.commit()
 
     # ── Load .env if present (local dev) ─────────────────────────────────────
     try:
