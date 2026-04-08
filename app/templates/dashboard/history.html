@@ -87,15 +87,79 @@
 
       <!-- Detail panel (collapsed by default) -->
       <div class="detail-panel hidden border-t border-white/10 px-5 py-4">
-        <div class="grid grid-cols-2 gap-4 text-xs">
+        <div class="grid grid-cols-2 gap-6 text-xs">
+
+          <!-- Payload table -->
           <div>
-            <p class="text-white/40 mb-1.5 uppercase tracking-wider font-semibold">Paramètres envoyés</p>
-            <pre class="text-white/60 leading-relaxed overflow-auto max-h-48">{{ p.payload | tojson(indent=2) if p.payload else '{}' }}</pre>
+            <p class="text-white/40 mb-2 uppercase tracking-wider font-semibold">Paramètres envoyés</p>
+            {% if p.payload %}
+            <table class="w-full border-collapse">
+              <thead>
+                <tr class="border-b border-white/10">
+                  <th class="text-left py-1.5 pr-4 text-white/40 font-medium w-1/2">Paramètre</th>
+                  <th class="text-left py-1.5 text-white/40 font-medium">Valeur</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for key, val in p.payload.items() %}
+                <tr class="border-b border-white/5">
+                  <td class="py-1.5 pr-4 text-white/50 capitalize">{{ key.replace('_', ' ') }}</td>
+                  <td class="py-1.5 text-white/80 font-medium">{{ val }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p class="text-white/30 italic">Aucun paramètre</p>
+            {% endif %}
           </div>
+
+          <!-- Result table -->
           <div>
-            <p class="text-white/40 mb-1.5 uppercase tracking-wider font-semibold">Résultat complet</p>
-            <pre class="text-white/60 leading-relaxed overflow-auto max-h-48">{{ p.result | without_key('_meta') | tojson(indent=2) if p.result else '{}' }}</pre>
+            <p class="text-white/40 mb-2 uppercase tracking-wider font-semibold">Résultat complet</p>
+            {% set res = p.result | without_key('_meta') if p.result else {} %}
+            {% if res %}
+            <table class="w-full border-collapse">
+              <thead>
+                <tr class="border-b border-white/10">
+                  <th class="text-left py-1.5 pr-4 text-white/40 font-medium w-1/2">Champ</th>
+                  <th class="text-left py-1.5 text-white/40 font-medium">Valeur</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for key, val in res.items() %}
+                  {% if val is mapping %}
+                    <tr class="border-b border-white/5">
+                      <td colspan="2" class="pt-2 pb-1 text-white/50 capitalize font-semibold">{{ key.replace('_', ' ') }}</td>
+                    </tr>
+                    {% for subkey, subval in val.items() %}
+                    <tr class="border-b border-white/5">
+                      <td class="py-1.5 pr-4 pl-3 text-white/40 capitalize">{{ subkey.replace('_', ' ') }}</td>
+                      <td class="py-1.5 text-white/80 font-medium">
+                        {% if subval is float or subval is number %}
+                          {{ "%.4f"|format(subval) if subval % 1 != 0 else subval }}
+                        {% else %}{{ subval }}{% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  {% else %}
+                  <tr class="border-b border-white/5">
+                    <td class="py-1.5 pr-4 text-white/50 capitalize">{{ key.replace('_', ' ') }}</td>
+                    <td class="py-1.5 text-white/80 font-medium">
+                      {% if val is float or val is number %}
+                        {{ "%.4f"|format(val) if val % 1 != 0 else val }}
+                      {% else %}{{ val }}{% endif %}
+                    </td>
+                  </tr>
+                  {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p class="text-white/30 italic">Aucun résultat</p>
+            {% endif %}
           </div>
+
         </div>
       </div>
     </div>
