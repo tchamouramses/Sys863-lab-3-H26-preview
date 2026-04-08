@@ -10,7 +10,6 @@ main_bp = Blueprint("main", __name__)
 
 _API_URL = "https://smart-farming.calme2me.com/predict"
 
-
 def _api_login_required(f):
     """Return JSON 401 for AJAX calls instead of HTML redirect."""
     @wraps(f)
